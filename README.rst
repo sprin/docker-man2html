@@ -34,7 +34,7 @@ Run a Centos 7 container, downloading first if not already locally available:
 
 .. code::
 
-   docker run -it --name man2html sprin/centos7:manpages /bin/bash
+   docker run -it --name man2html_ctr sprin/centos7:manpages /bin/bash
 
 Inside the container, install man2html:
 
@@ -59,7 +59,7 @@ first arg is the container name, and the second is the image name.
 
 .. code::
 
-   docker commit man2html man2html
+   docker commit man2html_ctr man2html_img
 
 
 Let's see it in the list:
@@ -72,4 +72,39 @@ Now let's generate some nice manpages with that new image!
 
 .. code::
 
-   docker run manpages /bin/bash -c '/usr/bin/gunzip -c $(man -w systemd) | /usr/bin/man2html' > /tmp/tmp.html && open /tmp/tmp.html
+   docker run man2html /bin/bash -c '/usr/bin/gunzip -c $(man -w systemd) | /usr/bin/man2html' > /tmp/tmp.html && open /tmp/tmp.html
+
+Good old Readability
+====================
+
+http://www.tobez.org/download/readability.html
+
+Dockerfiles
+===========
+
+.. code::
+
+   git clone git@github.com:sprin/docker-man2html.git
+   cd docker-man2html
+   docker build -t man2html .
+
+Now we have an image identical to the first one, but created automatically
+using the definition in the Dockerfile.
+
+Daemons in my Dockers
+=====================
+
+Let's run an nginx daemon:
+
+.. code::
+
+   docker run -d -p 80 --name nginx nginx
+
+This will expose port 80 of the nginx container on a random port, which
+you can see with `docker ps`.
+
+Extra Credit!
+=============
+
+Try linking the man2html container to the nginx container so nginx can serve
+the generated HTML files.
